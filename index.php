@@ -125,28 +125,78 @@
 		header("Location: /administrador/users");
  		exit;
 
-});
-	
-	$app->post("/administrador/users/:iduser", function($iduser){
+	});
+		
+		$app->get("/administrador/forgot", function() {
 
-		User::verifyLogin(); 
+		$page = new PageAdmin([
+			"header"=>false,
+			"footer"=>false
+		]);
+
+		$page->setTpl("forgot");	
+
+	});
+
+	$app->post("/administrador/forgot", function(){
+
+		$user = User::getForgot($_POST["email"]);
+
+		header("Location: /administrador/forgot/sent");
+		exit;
+
+	});
+
+	$app->get("/administrador/forgot/sent", function(){
+
+		$page = new PageAdmin([
+			"header"=>false,
+			"footer"=>false
+		]);
+
+		$page->setTpl("forgot-sent");	
+
+	});
+
+
+	$app->get("/administrador/forgot/reset", function(){
+
+		$user = User::validForgotDecrypt($_GET["code"]);
+
+		$page = new PageAdmin([
+			"header"=>false,
+			"footer"=>false
+		]);
+
+		$page->setTpl("forgot-reset", array(
+			"name"=>$user["desperson"],
+			"code"=>$_GET["code"]
+		));
+
+	});
+
+	$app->post("/administrador/forgot/reset", function(){
+
+		$forgot = User::validForgotDecrypt($_POST["code"]);	
+
+		User::setFogotUsed($forgot["idrecovery"]);
 
 		$user = new User();
 
-		$_POST["inadmin"] = (isset($_POST["inadmin"])) ? 1 : 0;
+		$user->get((int)$forgot["iduser"]);
 
-		$user->get((int)$iduser);
+		$password = User::getPasswordHash($_POST["password"]);
 
-		$user->setData($_POST);
+		$user->setPassword($password);
 
-		$user->update();
+		$page = new PageAdmin([
+			"header"=>false,
+			"footer"=>false
+		]);
 
-		header("Location: /administrador/users");
+		$page->setTpl("forgot-reset-success");
 
-		exit;
 	});
-	
-
 
 	$app->run();
 ?>
