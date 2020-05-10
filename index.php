@@ -54,42 +54,43 @@
 
 	$app->get("/administrador/users", function(){
 
+			User::verifyLogin();
+
+			$users = User::listAll();
+
+			$page = new PageAdmin();
+
+			$page->setTpl("users", array(
+				"users" => $users
+			));
+		});
+
+	$app->get("/administrador/users/create", function() {
+
 		User::verifyLogin();
 
-		$users = User::listAll();
-
-		$page = new PageAdmin();
-
-		$page->setTpl("users", array(
-			"users" => $users
-		));
-	});
-
-	$app->get("/administrador/users/create", function(){
-
-		User::verifyLogin();
-
-		$page = new PageAdmin();
+		$page = new Pageadmin();
 
 		$page->setTpl("users-create");
+
 	});
 
-	$app->get("/administrador/users/:iduser/delete", function($iduser){
+	$app->get("/administrador/users/:iduser/delete", function($iduser) {
 
-		User::verifyLogin();
+		User::verifyLogin();	
 
-		$user= new User();
+		$user = new User();
 
 		$user->get((int)$iduser);
 
 		$user->delete();
 
 		header("Location: /administrador/users");
-
 		exit;
+
 	});
 
-	$app->get("/admininstrador/users/:iduser", function($iduser){
+	$app->get("/administrador/users/:iduser", function($iduser) {
 
 		User::verifyLogin();
 
@@ -99,104 +100,56 @@
 
 		$page = new PageAdmin();
 
-		$page->setTpl("users-update",array(
+		$page->setTpl("users-update", array(
 			"user"=>$user->getValues()
 		));
+
 	});
 
-	$app->post("/administrador/users/create", function () {
+	$app->post("/administrador/users/create", function() {
 
- 		User::verifyLogin();
+		User::verifyLogin();
 
 		$user = new User();
 
- 		$_POST["inadmin"] = (isset($_POST["inadmin"])) ? 1 : 0;
+		$_POST["inadmin"] = (isset($_POST["inadmin"]))?1:0;
 
- 		$_POST['despassword'] = password_hash($_POST["despassword"], PASSWORD_DEFAULT, [
+		$_POST['despassword'] = User::getPasswordHash($_POST['despassword']);
 
- 			"cost"=>12
-
- 		]);
-
- 		$user->setData($_POST);
+		$user->setData($_POST);
 
 		$user->save();
 
 		header("Location: /administrador/users");
- 		exit;
-
-	});
-		
-		$app->get("/administrador/forgot", function() {
-
-		$page = new PageAdmin([
-			"header"=>false,
-			"footer"=>false
-		]);
-
-		$page->setTpl("forgot");	
-
-	});
-
-	$app->post("/administrador/forgot", function(){
-
-		$user = User::getForgot($_POST["email"]);
-
-		header("Location: /administrador/forgot/sent");
 		exit;
 
 	});
 
-	$app->get("/administrador/forgot/sent", function(){
+	$app->post("/administrador/users/:iduser", function($iduser) {
 
-		$page = new PageAdmin([
-			"header"=>false,
-			"footer"=>false
-		]);
-
-		$page->setTpl("forgot-sent");	
-
-	});
-
-
-	$app->get("/administrador/forgot/reset", function(){
-
-		$user = User::validForgotDecrypt($_GET["code"]);
-
-		$page = new PageAdmin([
-			"header"=>false,
-			"footer"=>false
-		]);
-
-		$page->setTpl("forgot-reset", array(
-			"name"=>$user["desperson"],
-			"code"=>$_GET["code"]
-		));
-
-	});
-
-	$app->post("/administrador/forgot/reset", function(){
-
-		$forgot = User::validForgotDecrypt($_POST["code"]);	
-
-		User::setFogotUsed($forgot["idrecovery"]);
+		User::verifyLogin();
 
 		$user = new User();
 
-		$user->get((int)$forgot["iduser"]);
+		$_POST["inadmin"] = (isset($_POST["inadmin"]))?1:0;
 
-		$password = User::getPasswordHash($_POST["password"]);
+		$user->get((int)$iduser);
 
-		$user->setPassword($password);
+		$user->setData($_POST);
 
-		$page = new PageAdmin([
-			"header"=>false,
-			"footer"=>false
-		]);
+		$user->update();	
 
-		$page->setTpl("forgot-reset-success");
+		header("Location: /administrador/users");
+		exit;
 
 	});
 
+	$app->get('/administrador/logout', function() {
+	    
+		User::logout();
+
+		header("Location: /administrador/login");
+		exit;
+	});
 	$app->run();
 ?>
