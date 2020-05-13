@@ -13,6 +13,7 @@
 	require_once("admin-users.php");
 	require_once("admin-categories.php");
 	require_once("admin-product.php");
+	require_once("functions.php");
 
 	$app->run();
 ?>
