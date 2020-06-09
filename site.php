@@ -84,7 +84,7 @@
 		$qtd = (isset($_GET['qtd'])) ? (int)$_GET['qtd'] : 1;
 
 		for ($i=0; $i < $qtd; $i++) { 
-			
+
 			$cart->addproduct($product);
 		}
 
@@ -121,4 +121,16 @@
 		header("Location: /cart");
 		exit;
 	});
+
+	$app->post("/cart/freight", function(){
+
+		$cart = Cart::getFromSession();
+
+		$cart->setFreight($_POST['zipcode']);
+
+		header("Location: /cart");
+		exit;
+
+
+	})
 ?>

@@ -201,6 +201,7 @@
 
 			$totals = $this->getProductsTotals();
 
+
 			if ($totals['nrqtd'] > 0) {
 
 				if ($totals['vlheight'] < 2) $totals['vlheight'] = 2;
