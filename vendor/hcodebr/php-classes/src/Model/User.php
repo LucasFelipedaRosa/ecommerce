@@ -323,7 +323,6 @@
 				":password"=>$password,
 				":iduser"=>$this->getiduser()
 			));
-
 		}
 
 		public static function setError($msg)
@@ -495,6 +494,8 @@
 				'total'=>(int)$resultTotal[0]["nrtotal"],
 				'pages'=>ceil($resultTotal[0]["nrtotal"] / $itemsPerPage)
 			];
+
 		} 
+
 	}
  ?>
