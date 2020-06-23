@@ -243,7 +243,7 @@
 
 					if ($inadmin === true) {
 
-						$link = "http://www.hcodecommerce.com.br/admin/forgot/reset?code=$code";
+						$link = "http://www.hcodecommerce.com.br/administrador/forgot/reset?code=$code";
 
 					} else {
 
