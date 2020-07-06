@@ -36,7 +36,7 @@
 
 		$user->delete();
 
-		header("Location: /administrador/users");
+		header("Location: /administra dor/users");
 		exit;
 
 	});

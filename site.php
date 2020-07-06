@@ -279,7 +279,10 @@
 
 	try {
 
-		User::login($_POST['login'], $_POST['password']);
+		$user = User::login($_POST['login'], $_POST['password']);
+		$cart = Cart::getFromSession();
+		$cart->setiduser($user->getiduser());
+		$cart->save();
 
 	} catch(Exception $e) {
 
@@ -468,6 +471,9 @@
 	$order->get((int)$idorder);
 
 	$page = new Page();
+
+	$bool = Cart::unsetCart();
+
 
 	$page->setTpl("payment", [
 		'order'=>$order->getValues()

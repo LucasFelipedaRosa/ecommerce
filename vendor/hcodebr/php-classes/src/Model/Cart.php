@@ -12,6 +12,18 @@
 		const SESSION = "Cart";
 		const SESSION_ERROR = "CartError";
 
+		public static function unsetCart(){
+
+			if (isset($_SESSION[Cart::SESSION])) {
+
+				$_SESSION[Cart::SESSION]['idcart'] = NULL;
+
+				$_SESSION[Cart::SESSION] = NULL;
+
+				session_regenerate_id();
+			}
+		}
+
 		public static function getFromSession()
 		{
 
