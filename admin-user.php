@@ -86,7 +86,7 @@
 		{
 
 			array_push($pages, [
-				'href'=>'/admin/users?'.http_build_query([
+				'href'=>'/administrador/users?'.http_build_query([
 					'page'=>$x+1,
 					'search'=>$search
 				]),
