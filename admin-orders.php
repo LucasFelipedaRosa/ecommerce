@@ -90,14 +90,45 @@
 
 
 	$app->get("/administrador/orders", function(){
-		
+
+
+
 		User::verifyLogin();
+
+		$search = (isset($_GET['search'])) ? $_GET['search'] : "";
+		$page = (isset($_GET['page'])) ? (int)$_GET['page'] : 1;
+
+		if ($search != '') {
+
+			$pagination = Order::getPageSearch($search, $page);
+
+		} else {
+
+			$pagination = Order::getPage($page);
+
+		}
+
+		$pages = [];
+
+		for ($x = 0; $x < $pagination['pages']; $x++)
+		{
+
+			array_push($pages, [
+				'href'=>'/administrador/orders?'.http_build_query([
+					'page'=>$x+1,
+					'search'=>$search
+				]),
+				'text'=>$x+1
+			]);
+
+		}
 
 		$page = new PageAdmin();
 
-		$page->setTpl("orders",[
-			"orders"=>Order::listALl(),	
-		]);
+		$page->setTpl("orders", [
+			"orders"=>$pagination['data'],
+			"search"=>$search,
+			"pages"=>$pages
+		]);	
 	});
-
 ?>
